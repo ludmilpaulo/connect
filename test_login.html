@@ -1,0 +1,234 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Teste de Login - Plataforma de Inglês</title>
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            max-width: 800px;
+            margin: 50px auto;
+            padding: 20px;
+            background: #f5f5f5;
+        }
+        .container {
+            background: white;
+            padding: 30px;
+            border-radius: 10px;
+            box-shadow: 0 2px 10px rgba(0,0,0,0.1);
+        }
+        h1 {
+            color: #667eea;
+            text-align: center;
+        }
+        .test-section {
+            margin: 20px 0;
+            padding: 20px;
+            border: 1px solid #ddd;
+            border-radius: 5px;
+        }
+        button {
+            background: #667eea;
+            color: white;
+            border: none;
+            padding: 10px 20px;
+            border-radius: 5px;
+            cursor: pointer;
+            margin: 5px;
+        }
+        button:hover {
+            background: #5568d3;
+        }
+        .result {
+            margin-top: 10px;
+            padding: 10px;
+            border-radius: 5px;
+            white-space: pre-wrap;
+            font-family: monospace;
+            font-size: 12px;
+        }
+        .success {
+            background: #d4edda;
+            border: 1px solid #c3e6cb;
+            color: #155724;
+        }
+        .error {
+            background: #f8d7da;
+            border: 1px solid #f5c6cb;
+            color: #721c24;
+        }
+        .info {
+            background: #d1ecf1;
+            border: 1px solid #bee5eb;
+            color: #0c5460;
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <h1>🧪 Teste de Autenticação</h1>
+        <p style="text-align: center; color: #666;">Teste os usuários criados (student e teacher)</p>
+
+        <div class="test-section">
+            <h3>1. Login como Estudante</h3>
+            <button onclick="testStudentLogin()">Testar Login Estudante</button>
+            <div id="studentResult"></div>
+        </div>
+
+        <div class="test-section">
+            <h3>2. Login como Professor</h3>
+            <button onclick="testTeacherLogin()">Testar Login Professor</button>
+            <div id="teacherResult"></div>
+        </div>
+
+        <div class="test-section">
+            <h3>3. Testar Endpoint Protegido</h3>
+            <button onclick="testProtectedEndpoint()">Testar /api/auth/me/</button>
+            <div id="protectedResult"></div>
+        </div>
+
+        <div class="test-section">
+            <h3>4. Informações dos Usuários</h3>
+            <div class="result info">
+                <strong>Estudante:</strong><br>
+                Usuário: student<br>
+                Senha: student123<br><br>
+                <strong>Professor:</strong><br>
+                Usuário: teacher<br>
+                Senha: teacher123
+            </div>
+        </div>
+    </div>
+
+    <script>
+        const API_BASE_URL = 'http://localhost:8000/api';
+        let currentToken = null;
+
+        async function testStudentLogin() {
+            const resultDiv = document.getElementById('studentResult');
+            resultDiv.innerHTML = '<div class="result info">Testando...</div>';
+
+            try {
+                const response = await fetch(`${API_BASE_URL}/auth/login/`, {
+                    method: 'POST',
+                    headers: {
+                        'Content-Type': 'application/json',
+                    },
+                    body: JSON.stringify({
+                        username: 'student',
+                        password: 'student123'
+                    })
+                });
+
+                const data = await response.json();
+
+                if (response.ok) {
+                    currentToken = data.tokens.access;
+                    resultDiv.innerHTML = `<div class="result success">
+✅ Login bem-sucedido!
+
+Usuário: ${data.user.username}
+Tipo: ${data.user.user_type}
+Nome: ${data.user.first_name} ${data.user.last_name}
+Email: ${data.user.email}
+Token recebido: Sim (${data.tokens.access.substring(0, 20)}...)
+                    </div>`;
+                } else {
+                    resultDiv.innerHTML = `<div class="result error">
+❌ Erro: ${data.error || 'Erro desconhecido'}
+                    </div>`;
+                }
+            } catch (error) {
+                resultDiv.innerHTML = `<div class="result error">
+❌ Erro de conexão: ${error.message}
+Certifique-se de que o servidor Django está rodando em http://localhost:8000
+                </div>`;
+            }
+        }
+
+        async function testTeacherLogin() {
+            const resultDiv = document.getElementById('teacherResult');
+            resultDiv.innerHTML = '<div class="result info">Testando...</div>';
+
+            try {
+                const response = await fetch(`${API_BASE_URL}/auth/login/`, {
+                    method: 'POST',
+                    headers: {
+                        'Content-Type': 'application/json',
+                    },
+                    body: JSON.stringify({
+                        username: 'teacher',
+                        password: 'teacher123'
+                    })
+                });
+
+                const data = await response.json();
+
+                if (response.ok) {
+                    currentToken = data.tokens.access;
+                    resultDiv.innerHTML = `<div class="result success">
+✅ Login bem-sucedido!
+
+Usuário: ${data.user.username}
+Tipo: ${data.user.user_type}
+Nome: ${data.user.first_name} ${data.user.last_name}
+Email: ${data.user.email}
+Token recebido: Sim (${data.tokens.access.substring(0, 20)}...)
+                    </div>`;
+                } else {
+                    resultDiv.innerHTML = `<div class="result error">
+❌ Erro: ${data.error || 'Erro desconhecido'}
+                    </div>`;
+                }
+            } catch (error) {
+                resultDiv.innerHTML = `<div class="result error">
+❌ Erro de conexão: ${error.message}
+Certifique-se de que o servidor Django está rodando em http://localhost:8000
+                </div>`;
+            }
+        }
+
+        async function testProtectedEndpoint() {
+            const resultDiv = document.getElementById('protectedResult');
+            
+            if (!currentToken) {
+                resultDiv.innerHTML = `<div class="result error">
+❌ Faça login primeiro para obter um token
+                </div>`;
+                return;
+            }
+
+            resultDiv.innerHTML = '<div class="result info">Testando...</div>';
+
+            try {
+                const response = await fetch(`${API_BASE_URL}/auth/me/`, {
+                    method: 'GET',
+                    headers: {
+                        'Authorization': `Bearer ${currentToken}`
+                    }
+                });
+
+                const data = await response.json();
+
+                if (response.ok) {
+                    resultDiv.innerHTML = `<div class="result success">
+✅ Endpoint protegido acessado com sucesso!
+
+Dados do usuário:
+${JSON.stringify(data, null, 2)}
+                    </div>`;
+                } else {
+                    resultDiv.innerHTML = `<div class="result error">
+❌ Erro: ${data.detail || 'Acesso negado'}
+                    </div>`;
+                }
+            } catch (error) {
+                resultDiv.innerHTML = `<div class="result error">
+❌ Erro de conexão: ${error.message}
+                </div>`;
+            }
+        }
+    </script>
+</body>
+</html>
