@@ -104,8 +104,17 @@ class MaterialViewSet(viewsets.ModelViewSet):
             material = self.get_object()
             file_path = material.get_full_path()
             
-            if not file_path or not os.path.exists(file_path):
-                raise Http404("File not found")
+            if not file_path:
+                return Response(
+                    {'error': f'Material {pk} does not have a file path configured'},
+                    status=status.HTTP_404_NOT_FOUND
+                )
+            
+            if not os.path.exists(file_path):
+                return Response(
+                    {'error': f'File not found at path: {file_path}'},
+                    status=status.HTTP_404_NOT_FOUND
+                )
             
             # Determine content type based on file extension
             content_type_map = {
@@ -132,9 +141,11 @@ class MaterialViewSet(viewsets.ModelViewSet):
             ext = os.path.splitext(file_path)[1].lower()
             content_type = content_type_map.get(ext, 'application/octet-stream')
             
-            # Open file in binary mode and create response
-            with open(file_path, 'rb') as f:
-                response = FileResponse(f, content_type=content_type)
+            try:
+                # Open file in binary mode and create response
+                # FileResponse will handle closing the file
+                file_handle = open(file_path, 'rb')
+                response = FileResponse(file_handle, content_type=content_type, as_attachment=False)
                 filename = os.path.basename(file_path)
                 
                 # Always use inline to prevent download - files should be viewed in platform
@@ -174,11 +185,24 @@ class MaterialViewSet(viewsets.ModelViewSet):
                     response['Content-Type'] = content_type
                 
                 return response
+            except IOError as e:
+                return Response(
+                    {'error': f'Error opening file: {str(e)}'},
+                    status=status.HTTP_500_INTERNAL_SERVER_ERROR
+                )
             
         except Material.DoesNotExist:
-            raise Http404("Material not found")
+            return Response(
+                {'error': f'Material with id {pk} not found'},
+                status=status.HTTP_404_NOT_FOUND
+            )
         except Exception as e:
-            return Response({'error': str(e)}, status=status.HTTP_500_INTERNAL_SERVER_ERROR)
+            import traceback
+            error_trace = traceback.format_exc()
+            return Response(
+                {'error': str(e), 'traceback': error_trace},
+                status=status.HTTP_500_INTERNAL_SERVER_ERROR
+            )
     
     @action(detail=False, methods=['post'])
     def upload(self, request):

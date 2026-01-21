@@ -71,6 +71,14 @@ def login(request):
         username = serializer.validated_data['username']
         password = serializer.validated_data['password']
         
+        # Allow login with email: resolve to username if input contains @
+        if '@' in username:
+            try:
+                user_by_email = User.objects.get(email=username)
+                username = user_by_email.username
+            except User.DoesNotExist:
+                pass
+        
         user = authenticate(username=username, password=password)
         
         if user is not None:
