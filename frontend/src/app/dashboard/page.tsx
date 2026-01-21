@@ -9,7 +9,7 @@ import {
 } from '@mui/material'
 import {
   School, Book, PictureAsPdf, MusicNote, VideoLibrary, PlayArrow,
-  CheckCircle, RadioButtonUnchecked, TrendingUp, AccessTime, Dashboard as DashboardIcon
+  CheckCircle, TrendingUp, Dashboard as DashboardIcon, EmojiEvents, QueryStats
 } from '@mui/icons-material'
 import Link from 'next/link'
 import { useAuth } from '@/contexts/AuthContext'
@@ -151,27 +151,50 @@ export default function StudentDashboard() {
   }
 
   return (
-    <Box sx={{ minHeight: '100vh', background: 'linear-gradient(135deg, #667eea 0%, #764ba2 100%)', pb: 8 }}>
+    <Box
+      sx={{
+        minHeight: '100vh',
+        pb: 8,
+        background:
+          'radial-gradient(900px circle at 10% 10%, rgba(37, 99, 235, 0.25), transparent 35%), radial-gradient(900px circle at 90% 20%, rgba(124, 58, 237, 0.22), transparent 45%), linear-gradient(135deg, #0B1220 0%, #101A33 40%, #0B1220 100%)',
+      }}
+    >
       <Container maxWidth="lg" sx={{ py: 4, px: { xs: 2, sm: 3 } }}>
-        <Paper elevation={0} sx={{ p: 4, mb: 4, background: 'rgba(255, 255, 255, 0.95)', backdropFilter: 'blur(10px)' }}>
-          <Box display="flex" alignItems="center" gap={2} mb={3}>
-            <Avatar sx={{ bgcolor: 'primary.main', width: 56, height: 56 }}>
-              <DashboardIcon sx={{ fontSize: 32 }} />
-            </Avatar>
-            <Box>
-              <Typography variant="h4" sx={{ fontWeight: 700, mb: 0.5 }}>
-                Meu Dashboard
-              </Typography>
-              <Typography variant="body2" color="text.secondary">
-                Bem-vindo à sua área de aprendizado
-              </Typography>
+        <Paper
+          elevation={0}
+          sx={{
+            p: { xs: 3, sm: 4 },
+            mb: 4,
+            borderRadius: 4,
+            background: 'rgba(255, 255, 255, 0.92)',
+            backdropFilter: 'blur(14px)',
+            boxShadow: '0 30px 80px rgba(0,0,0,0.35)',
+          }}
+        >
+          <Box display="flex" alignItems="center" justifyContent="space-between" gap={2} mb={3}>
+            <Box display="flex" alignItems="center" gap={2}>
+              <Avatar sx={{ bgcolor: 'primary.main', width: 56, height: 56 }}>
+                <DashboardIcon sx={{ fontSize: 28 }} />
+              </Avatar>
+              <Box>
+                <Typography variant="h4" sx={{ fontWeight: 900, letterSpacing: '-0.02em', mb: 0.5 }}>
+                  Meu Dashboard
+                </Typography>
+                <Typography variant="body2" color="text.secondary">
+                  Bem-vindo, {user?.first_name || user?.username}. Continue sua trilha e acompanhe seu progresso.
+                </Typography>
+              </Box>
+            </Box>
+            <Box display={{ xs: 'none', md: 'flex' }} gap={1}>
+              <Chip icon={<QueryStats />} label="Progresso em tempo real" variant="outlined" />
+              <Chip icon={<EmojiEvents />} label="Metas e conquistas" variant="outlined" />
             </Box>
           </Box>
 
           {/* Statistics Cards */}
           <Grid container spacing={3} sx={{ mb: 4 }}>
             <Grid item xs={12} sm={6} md={3}>
-              <Card sx={{ background: 'linear-gradient(135deg, #667eea 0%, #764ba2 100%)', color: 'white' }}>
+              <Card sx={{ background: 'linear-gradient(135deg, #2563EB 0%, #7C3AED 100%)', color: 'white' }}>
                 <CardContent>
                   <Box display="flex" alignItems="center" justifyContent="space-between">
                     <Box>
@@ -189,7 +212,7 @@ export default function StudentDashboard() {
             </Grid>
 
             <Grid item xs={12} sm={6} md={3}>
-              <Card sx={{ background: 'linear-gradient(135deg, #f093fb 0%, #f5576c 100%)', color: 'white' }}>
+              <Card sx={{ background: 'linear-gradient(135deg, #EC4899 0%, #F97316 100%)', color: 'white' }}>
                 <CardContent>
                   <Box display="flex" alignItems="center" justifyContent="space-between">
                     <Box>
@@ -200,14 +223,14 @@ export default function StudentDashboard() {
                         Aulas
                       </Typography>
                     </Box>
-                    <Book sx={{ fontSize: 48, opacity: 0.3 }} />
+                    <Book sx={{ fontSize: 48, opacity: 0.28 }} />
                   </Box>
                 </CardContent>
               </Card>
             </Grid>
 
             <Grid item xs={12} sm={6} md={3}>
-              <Card sx={{ background: 'linear-gradient(135deg, #4facfe 0%, #00f2fe 100%)', color: 'white' }}>
+              <Card sx={{ background: 'linear-gradient(135deg, #06B6D4 0%, #22C55E 100%)', color: 'white' }}>
                 <CardContent>
                   <Box display="flex" alignItems="center" justifyContent="space-between">
                     <Box>
@@ -218,14 +241,14 @@ export default function StudentDashboard() {
                         Materiais
                       </Typography>
                     </Box>
-                    <PictureAsPdf sx={{ fontSize: 48, opacity: 0.3 }} />
+                    <PictureAsPdf sx={{ fontSize: 48, opacity: 0.28 }} />
                   </Box>
                 </CardContent>
               </Card>
             </Grid>
 
             <Grid item xs={12} sm={6} md={3}>
-              <Card sx={{ background: 'linear-gradient(135deg, #fa709a 0%, #fee140 100%)', color: 'white' }}>
+              <Card sx={{ background: 'linear-gradient(135deg, #F59E0B 0%, #F97316 100%)', color: 'white' }}>
                 <CardContent>
                   <Box display="flex" alignItems="center" justifyContent="space-between">
                     <Box>
@@ -236,7 +259,7 @@ export default function StudentDashboard() {
                         Completados
                       </Typography>
                     </Box>
-                    <CheckCircle sx={{ fontSize: 48, opacity: 0.3 }} />
+                    <CheckCircle sx={{ fontSize: 48, opacity: 0.28 }} />
                   </Box>
                 </CardContent>
               </Card>
@@ -247,9 +270,21 @@ export default function StudentDashboard() {
 
           {/* Courses List */}
           <Box>
-            <Typography variant="h5" gutterBottom sx={{ fontWeight: 600, mb: 3 }}>
-              Meus Cursos
-            </Typography>
+            <Box display="flex" alignItems="baseline" justifyContent="space-between" gap={2} mb={2.5}>
+              <Box>
+                <Typography variant="h5" gutterBottom sx={{ fontWeight: 900, letterSpacing: '-0.01em', mb: 0.25 }}>
+                  Meus Cursos
+                </Typography>
+                <Typography variant="body2" color="text.secondary">
+                  Continue de onde parou — o progresso fica salvo automaticamente.
+                </Typography>
+              </Box>
+              <Link href="/" style={{ textDecoration: 'none' }}>
+                <Button variant="outlined" startIcon={<TrendingUp />}>
+                  Explorar mais
+                </Button>
+              </Link>
+            </Box>
             {courses.length === 0 ? (
               <Paper sx={{ p: 4, textAlign: 'center' }}>
                 <School sx={{ fontSize: 60, color: 'text.secondary', mb: 2 }} />
@@ -315,8 +350,8 @@ export default function StudentDashboard() {
                                 '& .MuiLinearProgress-bar': {
                                   borderRadius: 5,
                                   background: progress === 100 
-                                    ? 'linear-gradient(90deg, #4caf50 0%, #8bc34a 100%)'
-                                    : 'linear-gradient(90deg, #667eea 0%, #764ba2 100%)'
+                                    ? 'linear-gradient(90deg, #16A34A 0%, #22C55E 100%)'
+                                    : 'linear-gradient(90deg, #2563EB 0%, #7C3AED 100%)'
                                 }
                               }} 
                             />

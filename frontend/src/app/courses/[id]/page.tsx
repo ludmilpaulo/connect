@@ -139,7 +139,14 @@ export default function CourseDetail() {
   }
 
   return (
-    <Box sx={{ minHeight: '100vh', background: 'linear-gradient(135deg, #667eea 0%, #764ba2 100%)', pb: 8 }}>
+    <Box
+      sx={{
+        minHeight: '100vh',
+        pb: 8,
+        background:
+          'radial-gradient(900px circle at 10% 10%, rgba(37, 99, 235, 0.25), transparent 35%), radial-gradient(900px circle at 90% 20%, rgba(124, 58, 237, 0.22), transparent 45%), linear-gradient(135deg, #0B1220 0%, #101A33 40%, #0B1220 100%)',
+      }}
+    >
       <Container maxWidth="lg" sx={{ py: 4, px: { xs: 2, sm: 3 } }}>
         <Button
           startIcon={<ArrowBack />}
@@ -155,7 +162,17 @@ export default function CourseDetail() {
           Voltar aos Cursos
         </Button>
 
-        <Paper elevation={0} sx={{ p: 4, mb: 4, background: 'rgba(255, 255, 255, 0.95)', backdropFilter: 'blur(10px)' }}>
+        <Paper
+          elevation={0}
+          sx={{
+            p: { xs: 3, sm: 4 },
+            mb: 4,
+            borderRadius: 4,
+            background: 'rgba(255, 255, 255, 0.92)',
+            backdropFilter: 'blur(14px)',
+            boxShadow: '0 30px 80px rgba(0,0,0,0.35)',
+          }}
+        >
           <Box display="flex" alignItems="center" gap={2} mb={2}>
             <Avatar sx={{ bgcolor: 'primary.main', width: 56, height: 56 }}>
               <Book sx={{ fontSize: 32 }} />
@@ -191,8 +208,17 @@ export default function CourseDetail() {
 
       {/* Table of Contents */}
       {course.table_of_contents && course.table_of_contents.length > 0 && (
-        <Paper elevation={0} sx={{ p: 4, mb: 4, background: 'rgba(255, 255, 255, 0.95)' }}>
-          <Typography variant="h5" gutterBottom sx={{ fontWeight: 600, mb: 3 }}>
+        <Paper
+          elevation={0}
+          sx={{
+            p: { xs: 3, sm: 4 },
+            mb: 4,
+            borderRadius: 4,
+            background: 'rgba(255, 255, 255, 0.92)',
+            backdropFilter: 'blur(14px)',
+          }}
+        >
+          <Typography variant="h5" gutterBottom sx={{ fontWeight: 900, letterSpacing: '-0.01em', mb: 2 }}>
             Índice do Curso
           </Typography>
           <List>
@@ -210,12 +236,21 @@ export default function CourseDetail() {
 
       {/* Levels */}
       {course.levels && course.levels.length > 0 && (
-        <Paper elevation={0} sx={{ p: 4, mb: 4, background: 'rgba(255, 255, 255, 0.95)' }}>
-          <Typography variant="h5" gutterBottom sx={{ fontWeight: 600, mb: 3 }}>
+        <Paper
+          elevation={0}
+          sx={{
+            p: { xs: 3, sm: 4 },
+            mb: 4,
+            borderRadius: 4,
+            background: 'rgba(255, 255, 255, 0.92)',
+            backdropFilter: 'blur(14px)',
+          }}
+        >
+          <Typography variant="h5" gutterBottom sx={{ fontWeight: 900, letterSpacing: '-0.01em', mb: 2 }}>
             Níveis do Curso
           </Typography>
           {course.levels.map((level) => (
-            <Accordion key={level.id} sx={{ mb: 2 }}>
+            <Accordion key={level.id} sx={{ mb: 2, borderRadius: 3, overflow: 'hidden' }}>
               <AccordionSummary expandIcon={<ExpandMore />}>
                 <Box display="flex" alignItems="center" gap={2} width="100%">
                   <Chip 
@@ -263,7 +298,6 @@ export default function CourseDetail() {
                               onClick={() => router.push(`/courses/${params.id}/materials/${material.id}/view`)}
                               variant="contained"
                               fullWidth
-                              endIcon={<OpenInNew />}
                             >
                               Visualizar
                             </Button>

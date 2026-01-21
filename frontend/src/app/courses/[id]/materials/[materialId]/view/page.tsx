@@ -61,21 +61,32 @@ export default function MaterialView() {
   const loadFile = async (mat: Material) => {
     setFileLoading(true)
     try {
-      const fileUrl = `/materials/${mat.id}/file/`
+      // Use full URL to ensure proper request
+      const fileUrl = `${API_BASE_URL}/materials/${mat.id}/file/`
       const response = await api.get(fileUrl, {
         responseType: 'blob',
         headers: {
           'Accept': '*/*'
-        }
+        },
+        timeout: 60000 // 60 seconds timeout for large files
       })
       
       const blob = new Blob([response.data])
       const url = URL.createObjectURL(blob)
       setFileBlobUrl(url)
       setFileLoading(false)
-    } catch (error) {
+    } catch (error: any) {
       console.error('Error loading file:', error)
-      setError('Erro ao carregar arquivo')
+      if (error.code === 'ECONNABREFUSED' || error.message === 'Network Error') {
+        setError('Não foi possível conectar ao servidor. Verifique se o backend está rodando em http://localhost:8000')
+      } else if (error.response?.status === 404) {
+        setError('Arquivo não encontrado no servidor')
+      } else if (error.response?.status === 401) {
+        setError('Sessão expirada. Por favor, faça login novamente.')
+        router.push('/login')
+      } else {
+        setError(error.response?.data?.error || error.message || 'Erro ao carregar arquivo')
+      }
       setFileLoading(false)
     }
   }

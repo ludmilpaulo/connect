@@ -270,15 +270,37 @@ export default function AdminPanel() {
   }
 
   return (
-    <Box sx={{ minHeight: '100vh', background: 'linear-gradient(135deg, #667eea 0%, #764ba2 100%)', pb: 8 }}>
+    <Box
+      sx={{
+        minHeight: '100vh',
+        pb: 8,
+        background:
+          'radial-gradient(900px circle at 10% 10%, rgba(37, 99, 235, 0.25), transparent 35%), radial-gradient(900px circle at 90% 20%, rgba(124, 58, 237, 0.22), transparent 45%), linear-gradient(135deg, #0B1220 0%, #101A33 40%, #0B1220 100%)',
+      }}
+    >
       <Container maxWidth="lg" sx={{ py: 4, px: { xs: 2, sm: 3 } }}>
-        <Paper elevation={0} sx={{ p: 4, mb: 4, background: 'rgba(255, 255, 255, 0.95)' }}>
+        <Paper
+          elevation={0}
+          sx={{
+            p: { xs: 3, sm: 4 },
+            mb: 4,
+            borderRadius: 4,
+            background: 'rgba(255, 255, 255, 0.92)',
+            backdropFilter: 'blur(14px)',
+            boxShadow: '0 30px 80px rgba(0,0,0,0.35)',
+          }}
+        >
           <Box display="flex" alignItems="center" justifyContent="space-between" mb={3}>
             <Box display="flex" alignItems="center" gap={2}>
               <Dashboard color="primary" sx={{ fontSize: 40 }} />
-              <Typography variant="h4" sx={{ fontWeight: 700 }}>
+              <Box>
+                <Typography variant="h4" sx={{ fontWeight: 900, letterSpacing: '-0.02em', lineHeight: 1.1 }}>
                 Painel de Administração
-              </Typography>
+                </Typography>
+                <Typography variant="body2" color="text.secondary" sx={{ mt: 0.5 }}>
+                  Gerencie cursos, níveis e uploads com uma visão clara do conteúdo.
+                </Typography>
+              </Box>
             </Box>
             <Button
               startIcon={<ArrowBack />}
@@ -289,7 +311,14 @@ export default function AdminPanel() {
             </Button>
           </Box>
 
-          <Tabs value={currentTab} onChange={(_, newValue) => setCurrentTab(newValue)} sx={{ mb: 3 }}>
+          <Tabs
+            value={currentTab}
+            onChange={(_, newValue) => setCurrentTab(newValue)}
+            sx={{
+              mb: 3,
+              '& .MuiTabs-indicator': { height: 3, borderRadius: 2 },
+            }}
+          >
             <Tab label="Cursos" icon={<School />} iconPosition="start" />
             <Tab label="Níveis" icon={<Book />} iconPosition="start" />
             <Tab label="Materiais" icon={<FolderOpen />} iconPosition="start" />
@@ -472,12 +501,12 @@ export default function AdminPanel() {
                           <ListItemText
                             primary={material.title}
                             secondary={
-                              <Box>
-                                <Typography variant="caption" display="block">
+                              <Box component="span" sx={{ display: 'block' }}>
+                                <Typography variant="caption" component="span" display="block">
                                   {material.file_path}
                                 </Typography>
                                 {material.file_size && (
-                                  <Typography variant="caption" color="text.secondary">
+                                  <Typography variant="caption" component="span" color="text.secondary" display="block">
                                     {formatFileSize(material.file_size)} • {material.material_type.toUpperCase()}
                                   </Typography>
                                 )}
